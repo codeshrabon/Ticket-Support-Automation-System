@@ -1,0 +1,283 @@
+Ticketing Support System — Developer Guideline
+
+> A practical, developer-ready guide to design and implement a two-panel (Admin + Client) ticketing/support automation system for an organization (100+ employees).
+
+
+
+
+---
+
+1. High-level requirements (summary)
+
+Two user panels: Client (employees) and Admin/IT.
+
+Dynamic categorization: Groups → Categories → Subcategories (admin managed).
+
+Ticket lifecycle: Open → Assigned → In Progress → Resolved → Closed.
+
+Attachments, priorities, comments, and ticket history/audit trail.
+
+Notifications (email + optional push/Slack/MS Teams).
+
+RBAC (Admin, IT Agent, Client) and authentication (JWT + refresh tokens).
+
+Scalable, containerized deployment with daily backups and monitoring.
+
+
+
+---
+
+2. System architecture (text + ASCII diagram)
+
+[Client Browser / Mobile]         [Admin Browser / Mobile]
+        |                                 |
+        |  HTTPS (REST / GraphQL)          |
+        |---------------------------------|
+                      |
+                 [API Gateway]
+                      |
+            +-----------------------+
+            |   Backend (Node / Java)|
+            |  - Auth Service        |
+            |  - Ticket Service      |
+            |  - Category Service    |
+            |  - Notification Worker |
+            +-----------------------+
+                      |
+                 [Relational DB (Postgres)]
+                      |
+         [Object Storage (S3 / MinIO) for attachments]
+                      |
+                 [Email / Push Provider]
+
+Optional: Message Queue (RabbitMQ / Redis Streams) between API and Notification Worker
+
+Design notes
+
+Keep services modular but within a single monolith or small microservices depending on team size.
+
+Use an API Gateway or reverse proxy (NGINX) for routing + TLS.
+
+Use a message queue for notifications if you expect spikes.
+
+
+
+---
+
+3. Database schema (ER summary + SQL snippets)
+
+Core tables
+
+users
+
+roles
+
+groups
+
+categories
+
+subcategories
+
+tickets
+
+ticket_comments (conversation & notes)
+
+ticket_history (audit)
+
+attachments
+
+
+ER (short)
+
+user 1..* tickets.created_by
+
+user 0..* tickets.assigned_to
+
+group 1..* categories 1..* subcategories
+
+ticket 1..* ticket_comments / attachments / ticket_history
+
+
+Example SQL (Postgres)
+
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(150) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  role VARCHAR(50) NOT NULL,
+  department VARCHAR(100),
+  created_at TIMESTAMP DEFAULT now()
+);
+
+CREATE TABLE groups (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(150) NOT NULL,
+  description TEXT
+);
+
+CREATE TABLE categories (
+  id SERIAL PRIMARY KEY,
+  group_id INT REFERENCES groups(id) ON DELETE CASCADE,
+  name VARCHAR(150) NOT NULL
+);
+
+CREATE TABLE subcategories (
+  id SERIAL PRIMARY KEY,
+  category_id INT REFERENCES categories(id) ON DELETE CASCADE,
+  name VARCHAR(150) NOT NULL
+);
+
+CREATE TABLE tickets (
+  id BIGSERIAL PRIMARY KEY,
+  ticket_no VARCHAR(50) UNIQUE NOT NULL,
+  created_by INT REFERENCES users(id),
+  assigned_to INT REFERENCES users(id),
+  group_id INT REFERENCES groups(id),
+  category_id INT REFERENCES categories(id),
+  subcategory_id INT REFERENCES subcategories(id),
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  priority VARCHAR(20) DEFAULT 'Medium',
+  status VARCHAR(30) DEFAULT 'Open',
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now()
+);
+
+CREATE TABLE ticket_comments (
+  id BIGSERIAL PRIMARY KEY,
+  ticket_id BIGINT REFERENCES tickets(id) ON DELETE CASCADE,
+  author_id INT REFERENCES users(id),
+  message TEXT,
+  is_internal BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT now()
+);
+
+CREATE TABLE attachments (
+  id BIGSERIAL PRIMARY KEY,
+  ticket_id BIGINT REFERENCES tickets(id) ON DELETE CASCADE,
+  file_path VARCHAR(500),
+  filename VARCHAR(255),
+  uploaded_by INT REFERENCES users(id),
+  created_at TIMESTAMP DEFAULT now()
+);
+
+CREATE TABLE ticket_history (
+  id BIGSERIAL PRIMARY KEY,
+  ticket_id BIGINT REFERENCES tickets(id) ON DELETE CASCADE,
+  changed_by INT REFERENCES users(id),
+  field_name VARCHAR(100),
+  old_value TEXT,
+  new_value TEXT,
+  changed_at TIMESTAMP DEFAULT now()
+);
+
+
+---
+
+4. API design (RESTful suggestions)
+
+Use /api/v1 prefix. Prefer JSON. Use pagination, filtering, sorting.
+
+Auth
+
+POST /api/v1/auth/login → {email,password} → returns access_token, refresh_token
+
+POST /api/v1/auth/refresh → refresh_token
+
+POST /api/v1/auth/logout
+
+
+Tickets (Client)
+
+POST /api/v1/tickets → create ticket (multipart/form-data for attachments)
+
+GET /api/v1/tickets → list my tickets (query: status, priority, page)
+
+GET /api/v1/tickets/{id} → ticket detail + comments + attachments
+
+POST /api/v1/tickets/{id}/comments → add comment
+
+GET /api/v1/groups → groups + categories + subcategories (for dropdowns)
+
+
+Admin/IT
+
+GET /api/v1/admin/tickets → list (filters: assigned_to, status, group)
+
+PUT /api/v1/admin/tickets/{id}/assign → {assigned_to}
+
+PUT /api/v1/admin/tickets/{id}/status → {status}
+
+PUT /api/v1/admin/tickets/{id} → update (priority, category)
+
+POST /api/v1/admin/groups → create group/category/subcategory
+
+GET /api/v1/admin/reports → ticket metrics
+
+
+Sample create ticket payload (JSON part)
+
+{
+  "group_id": 1,
+  "category_id": 3,
+  "subcategory_id": 7,
+  "title": "Cannot access VPN",
+  "priority": "High",
+  "description": "VPN client fails with error code 789"
+}
+
+
+---
+
+5. Notifications
+
+On ticket create: notify IT queue (email to team/group) + creator receipt.
+
+On assignment: notify assigned agent.
+
+On status change: notify ticket creator.
+
+Use templated emails. Store notification_logs for auditing.
+
+Send notifications async via worker and queue to avoid blocking.
+
+
+
+---
+
+6. UI/UX guidelines (quick)
+
+Client: simple wizard for Group → Category → Subcategory → Details.
+
+Show ticket status timeline and SLA timers.
+
+Admin: quick filters (unassigned, high priority), bulk actions, activity feed, metrics widgets.
+
+Mobile-friendly responsive UI.
+
+
+
+---
+
+7. Security & operational concerns
+
+Passwords hashed (bcrypt/argon2). Use HTTPS everywhere.
+
+RBAC enforced server-side.
+
+Rate-limit endpoints and validate file uploads (size + type).
+
+Regular DB backups (logical + physical) and periodic restore tests.
+
+Centralized logs (ELK / Grafana + Prometheus for metrics).
+
+
+
+---
+
+8. Deployment & CI/CD
+
+Dockerize app; use docker-compose for local dev.
+
+CI pipeline: lint → unit tests → build image → push to registry → deploy to staging → run smoke tests → deploy to prod.
