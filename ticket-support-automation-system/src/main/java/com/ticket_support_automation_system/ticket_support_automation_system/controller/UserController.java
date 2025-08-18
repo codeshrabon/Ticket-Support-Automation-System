@@ -52,9 +52,22 @@ public class UserController {
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         try {
             System.out.print("User id: " + id);
-            User user = userService.FindById(id);
+            User userId = userService.FindById(id);
 
-            return ResponseEntity.status(HttpStatus.FOUND).body(user);
+            return ResponseEntity.status(HttpStatus.FOUND).body(userId);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // update by id in existing data
+    @PutMapping("/update/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User user) {
+        try {
+            System.out.print("User id: " + id +" ");
+
+            User updateUser = userService.UpdateUser(id, user);
+            return ResponseEntity.status(HttpStatus.CREATED).body(updateUser);
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
