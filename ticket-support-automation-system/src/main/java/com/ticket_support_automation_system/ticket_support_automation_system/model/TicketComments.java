@@ -1,8 +1,10 @@
 package com.ticket_support_automation_system.ticket_support_automation_system.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "ticket_comments")
 public class TicketComments {
     @Id

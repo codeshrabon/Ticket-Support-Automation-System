@@ -1,10 +1,13 @@
 package com.ticket_support_automation_system.ticket_support_automation_system.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.List;
 
+
 @Entity
+@Data
 @Table(name = "subcategory")
 public class Subcategory {
     @Id
