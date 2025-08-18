@@ -3,6 +3,8 @@ package com.ticket_support_automation_system.ticket_support_automation_system.mo
 import com.ticket_support_automation_system.ticket_support_automation_system.model.enums.TicketEnums.TicketPriority;
 import com.ticket_support_automation_system.ticket_support_automation_system.model.enums.TicketEnums.TicketStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -20,7 +22,10 @@ public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "Ticket ID required")
     private String ticketId;
+
     private String ticketAssignedTo;
     private String ticketTitle;
 

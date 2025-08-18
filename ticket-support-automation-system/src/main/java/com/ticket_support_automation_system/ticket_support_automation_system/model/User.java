@@ -21,10 +21,10 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-@Table(name = "user")
-@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "user")
+@EntityListeners(AuditingEntityListener.class)
 public class User {
 
     @Id
