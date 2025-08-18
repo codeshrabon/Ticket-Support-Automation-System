@@ -71,6 +71,7 @@ public class UserService {
     }
 
 
+    // delete user by id
     public void DeleteById(Long id) {
         userRepository.findById(id).ifPresent(userRepository::delete);
     }
