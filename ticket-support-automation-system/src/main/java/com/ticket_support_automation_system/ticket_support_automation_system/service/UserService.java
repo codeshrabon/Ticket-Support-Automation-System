@@ -30,4 +30,10 @@ public class UserService {
     public List<User> SaveAllUsers(List<User> user) {
         return userRepository.saveAll(user);
     }
+
+
+    public User FindById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User ID: " + id +" not found"));
+    }
 }

@@ -30,7 +30,7 @@ public class UserController {
     }
 
     // add users from postman
-    @PostMapping("/addUsers")
+    @PostMapping("/postmanAddUsers")
     public ResponseEntity<List<User>>  addUsers( @Valid @RequestBody List<User> user) {
 
         try {
@@ -43,6 +43,19 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CREATED).body(saveAllUsers);
 
         } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //find user by id
+    @GetMapping("/findById/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        try {
+            System.out.print("User id: " + id);
+            User user = userService.FindById(id);
+
+            return ResponseEntity.status(HttpStatus.FOUND).body(user);
+        } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
     }
