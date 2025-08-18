@@ -69,4 +69,9 @@ public class UserService {
 
 
     }
+
+
+    public void DeleteById(Long id) {
+        userRepository.findById(id).ifPresent(userRepository::delete);
+    }
 }
