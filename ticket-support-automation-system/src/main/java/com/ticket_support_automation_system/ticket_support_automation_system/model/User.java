@@ -5,13 +5,18 @@ import com.ticket_support_automation_system.ticket_support_automation_system.mod
 import com.ticket_support_automation_system.ticket_support_automation_system.model.enums.UserEnums.UserRoles;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
 @Table(name = "user")
+@EntityListeners(AuditingEntityListener.class)
 public class User {
 
     @Id
@@ -38,10 +43,15 @@ public class User {
 	private String userPermanentAddress;
 	private String userEmergencyContactName;
 	private String userEmergencyContactPhone;
-	private String userCreatedAt;
+
 	private String userCreatedBy;
-	private String userUpdatedAt;
     private String userUpdatedBy;
+
+    @CreatedDate
+    private LocalDateTime userCreatedAt;
+    @LastModifiedDate
+	private LocalDateTime userUpdatedAt;
+
 
     //one user -> many comments
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

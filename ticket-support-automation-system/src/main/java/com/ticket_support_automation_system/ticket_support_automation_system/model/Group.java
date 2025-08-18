@@ -1,11 +1,13 @@
 package com.ticket_support_automation_system.ticket_support_automation_system.model;
 
 import jakarta.persistence.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.List;
 
 @Entity
 @Table(name = "user_group")
+
 public class Group {
 
     @Id

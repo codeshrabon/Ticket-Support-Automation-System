@@ -1,9 +1,14 @@
 package com.ticket_support_automation_system.ticket_support_automation_system.model;
 
 import jakarta.persistence.*;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ticket_history")
+@EntityListeners(AuditingEntityListener.class)
 public class TicketHistory {
 
     @Id
@@ -23,5 +28,7 @@ public class TicketHistory {
     private String fieldName;
     private String oldValue;
     private String newValue;
-    private String changedAt;
+
+    @LastModifiedDate
+    private LocalDateTime changedAt;
 }
