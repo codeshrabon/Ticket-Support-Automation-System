@@ -27,7 +27,8 @@ public class TicketService {
 
     // add ticket from postman
     public List<Ticket> AddTickets(List<Ticket> tickets) {
-        return ticketRepository.saveAll(tickets);
+        List<Ticket> savedTickets = ticketRepository.saveAll(tickets);
+        return ticketRepository.saveAll(savedTickets);
     }
 
 

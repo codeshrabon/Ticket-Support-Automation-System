@@ -1,6 +1,6 @@
-package com.ticket_support_automation_system.ticket_support_automation_system.model;
+package com.ticket_support_automation_system.ticket_support_automation_system.model.Groups;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ticket_support_automation_system.ticket_support_automation_system.model.Ticket;
 import jakarta.persistence.*;
 import lombok.*;
 

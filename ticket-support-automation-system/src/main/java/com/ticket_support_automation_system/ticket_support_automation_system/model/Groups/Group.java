@@ -1,9 +1,7 @@
-package com.ticket_support_automation_system.ticket_support_automation_system.model;
+package com.ticket_support_automation_system.ticket_support_automation_system.model.Groups;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.List;
 

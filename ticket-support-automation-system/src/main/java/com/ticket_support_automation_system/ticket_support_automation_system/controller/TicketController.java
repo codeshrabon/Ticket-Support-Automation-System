@@ -2,6 +2,7 @@ package com.ticket_support_automation_system.ticket_support_automation_system.co
 
 import com.ticket_support_automation_system.ticket_support_automation_system.model.Ticket;
 import com.ticket_support_automation_system.ticket_support_automation_system.service.TicketService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class TicketController {
 
     // add tickets from postman
     @PostMapping("/postmanAddTicket")
-    public ResponseEntity<List<Ticket>> addTicket(@RequestBody List<Ticket> tickets) {
+    public ResponseEntity<List<Ticket>> addTicket( @Valid @RequestBody List<Ticket> tickets) {
         try {
             List<Ticket> saveTickets = ticketService.AddTickets(tickets);
             System.out.print("Save tickets: " + saveTickets);

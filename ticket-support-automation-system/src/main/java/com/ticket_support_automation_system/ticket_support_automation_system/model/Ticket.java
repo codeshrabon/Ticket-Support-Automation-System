@@ -1,13 +1,14 @@
 package com.ticket_support_automation_system.ticket_support_automation_system.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ticket_support_automation_system.ticket_support_automation_system.model.Groups.Category;
+import com.ticket_support_automation_system.ticket_support_automation_system.model.Groups.Group;
+import com.ticket_support_automation_system.ticket_support_automation_system.model.Groups.Subcategory;
 import com.ticket_support_automation_system.ticket_support_automation_system.model.enums.TicketEnums.TicketPriority;
 import com.ticket_support_automation_system.ticket_support_automation_system.model.enums.TicketEnums.TicketStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -53,20 +54,20 @@ public class Ticket {
     @Enumerated(EnumType.STRING)
     private TicketStatus ticketStatus;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "group_id")
+    @ManyToOne
+    @JoinColumn(name = "group_id", nullable = true)
     @NotNull(message = "Group is required")
     private Group group;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "category_id")
+    @ManyToOne
+    @JoinColumn(name = "category_id",  nullable = true)
 //    @JsonIgnoreProperties({"tickets", "subcategories"})
     @NotNull(message = "Category is required")
     private Category category;
 
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "subcategory_id")
+    @ManyToOne
+    @JoinColumn(name = "subcategory_id",  nullable = true)
 //    @JsonIgnoreProperties("tickets")
     @NotNull(message = "Subcategory is required")
     private Subcategory subcategory;
