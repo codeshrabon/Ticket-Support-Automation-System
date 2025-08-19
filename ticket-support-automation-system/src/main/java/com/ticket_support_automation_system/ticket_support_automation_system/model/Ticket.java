@@ -1,6 +1,8 @@
 package com.ticket_support_automation_system.ticket_support_automation_system.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ticket_support_automation_system.ticket_support_automation_system.model.Groups.Category;
 import com.ticket_support_automation_system.ticket_support_automation_system.model.Groups.Group;
 import com.ticket_support_automation_system.ticket_support_automation_system.model.Groups.Subcategory;
@@ -54,21 +56,22 @@ public class Ticket {
     @Enumerated(EnumType.STRING)
     private TicketStatus ticketStatus;
 
-    @ManyToOne
+    /*@ManyToOne
     @JoinColumn(name = "group_id", nullable = true)
     @NotNull(message = "Group is required")
-    private Group group;
+    private Group group;*/
 
-    @ManyToOne
+
+    /*@ManyToOne
     @JoinColumn(name = "category_id",  nullable = true)
-//    @JsonIgnoreProperties({"tickets", "subcategories"})
+    @JsonBackReference
     @NotNull(message = "Category is required")
-    private Category category;
+    private Category category;*/
 
 
     @ManyToOne
     @JoinColumn(name = "subcategory_id",  nullable = true)
-//    @JsonIgnoreProperties("tickets")
+    @JsonBackReference
     @NotNull(message = "Subcategory is required")
     private Subcategory subcategory;
 
@@ -76,12 +79,12 @@ public class Ticket {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
-    @JsonIgnoreProperties({"ticketsCreated","ticketsUpdated","ticketsAssigned","comments"})
+    @JsonBackReference
     private User createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "updated_by")
-    @JsonIgnoreProperties({"ticketsCreated","ticketsUpdated","ticketsAssigned","comments"})
+    @JsonBackReference
     private User updatedBy;
 
     @CreatedDate
@@ -92,12 +95,12 @@ public class Ticket {
     //one ticket -> many comments
     // orphanRemoval = true -> Otherwise, if a comment is removed from the list, it won’t automatically be deleted from DB.
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonManagedReference
+    @JsonManagedReference
     private List<TicketComments> comments = new ArrayList<>();
 
     // one ticket -> many attachments
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonManagedReference
+    @JsonManagedReference
     private List<TicketAttachment> attachments = new ArrayList<>();
 
 }

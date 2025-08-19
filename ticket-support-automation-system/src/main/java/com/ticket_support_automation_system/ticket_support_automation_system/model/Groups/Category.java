@@ -1,6 +1,7 @@
 package com.ticket_support_automation_system.ticket_support_automation_system.model.Groups;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ticket_support_automation_system.ticket_support_automation_system.model.Ticket;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,12 +31,14 @@ public class Category {
     @JsonBackReference
     private Group group;
 
+    //
+    /*// one category -> many ticket
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonBackReference
-    private List<Ticket> tickets = new ArrayList<>();
+    @JsonManagedReference
+    private List<Ticket> tickets = new ArrayList<>();*/
 
     //one category -> many subcategories
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-//    @JsonManagedReference
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL,  orphanRemoval = true)
+    @JsonManagedReference
     private List<Subcategory> subcategories;
 }

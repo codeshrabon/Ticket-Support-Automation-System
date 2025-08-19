@@ -24,10 +24,20 @@ public class GroupService {
     }
 
     // add data by postman
+    // group related to category
     public List<Group> AddGroups(List<Group> group) {
         for (Group group1 : group) {
             if (group1.getCategories() != null){
-                group1.getCategories().forEach(category -> category.setGroup(group1));
+                group1.getCategories().forEach(category -> {
+                    category.setGroup(group1);
+                    if(category.getSubcategories() != null){
+                        category.getSubcategories().forEach(subcategory -> {
+                            subcategory.setCategory(category);
+                        });
+                    }
+                });
+
+
             }
         }
         return groupRepository.saveAll(group);

@@ -1,9 +1,11 @@
 package com.ticket_support_automation_system.ticket_support_automation_system.model.Groups;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ticket_support_automation_system.ticket_support_automation_system.model.Ticket;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -20,8 +22,15 @@ public class Group {
     private String groupId;
     private String groupName;
 
+    // Ticket already knows which Category it belongs to
+    //Tickets belong to Category (or Subcategory), not directly to Group
+    /*// one group -> many ticket
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Ticket> tickets = new ArrayList<>();*/
+
     //one group -> many category
-    @OneToMany(mappedBy = "group",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "group",cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Category> categories;
 
