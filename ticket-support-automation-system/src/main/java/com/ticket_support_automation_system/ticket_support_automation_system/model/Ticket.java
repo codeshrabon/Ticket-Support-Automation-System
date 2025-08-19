@@ -1,5 +1,6 @@
 package com.ticket_support_automation_system.ticket_support_automation_system.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ticket_support_automation_system.ticket_support_automation_system.model.enums.TicketEnums.TicketPriority;
 import com.ticket_support_automation_system.ticket_support_automation_system.model.enums.TicketEnums.TicketStatus;
@@ -34,7 +35,9 @@ public class Ticket {
     private String ticketId;
 
 
-    private String ticketAssignedTo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_to")
+    private User ticketAssignedTo;
 
 
     @NotBlank(message = "Ticket title is required")
@@ -56,18 +59,26 @@ public class Ticket {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "category_id")
+    @JsonIgnoreProperties({"tickets", "subcategories"})
     @NotNull(message = "Category is required")
     private Category category;
 
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "subcategory_id")
+    @JsonIgnoreProperties("tickets")
     @NotNull(message = "Subcategory is required")
     private Subcategory subcategory;
 
     private String ticketDescription;
-    private String ticketCreatedBy;
-    private String ticketModifiedBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", nullable = false)
+    private User createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "updated_by")
+    private User updatedBy;
 
     @CreatedDate
     private LocalDateTime ticketCreatedAt;
@@ -80,5 +91,9 @@ public class Ticket {
     @JsonManagedReference
     private List<TicketComments> comments = new ArrayList<>();
 
+    // one ticket -> many attachments
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<TicketAttachment> attachments = new ArrayList<>();
 
 }

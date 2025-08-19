@@ -79,6 +79,18 @@ public class User {
     @LastModifiedDate
 	private LocalDateTime userUpdatedAt;
 
+    // Tickets created by this user
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)
+    private List<Ticket> ticketsCreated = new ArrayList<>();
+
+    // Tickets last updated by this user
+    @OneToMany(mappedBy = "updatedBy", cascade = CascadeType.ALL)
+    private List<Ticket> ticketsUpdated = new ArrayList<>();
+
+    // Tickets assigned to this user
+    @OneToMany(mappedBy = "ticketAssignedTo", cascade = CascadeType.ALL)
+    private List<Ticket> ticketsAssigned = new ArrayList<>();
+
 
     //one user -> many comments
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

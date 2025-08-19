@@ -2,13 +2,18 @@ package com.ticket_support_automation_system.ticket_support_automation_system.mo
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "subcategory")
 public class Subcategory {
     @Id
@@ -29,5 +34,5 @@ public class Subcategory {
     //one subcategory -> many tickets
     @OneToMany(mappedBy = "subcategory", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<Ticket> tickets;
+    private List<Ticket> tickets = new ArrayList<>();
 }
