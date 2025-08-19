@@ -1,6 +1,7 @@
 package com.ticket_support_automation_system.ticket_support_automation_system.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ticket_support_automation_system.ticket_support_automation_system.model.enums.UserEnums.UserDepartments;
 import com.ticket_support_automation_system.ticket_support_automation_system.model.enums.UserEnums.UserJobTitles;
 import com.ticket_support_automation_system.ticket_support_automation_system.model.enums.UserEnums.UserRoles;
@@ -59,6 +60,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
 	private UserDepartments userDepartment;
+
     @Enumerated(EnumType.STRING)
 	private UserJobTitles userJobTitle;
 
@@ -74,6 +76,8 @@ public class User {
 	private String userCreatedBy;
     private String userUpdatedBy;
 
+
+
     @CreatedDate
     private LocalDateTime userCreatedAt;
     @LastModifiedDate
@@ -81,19 +85,27 @@ public class User {
 
     // Tickets created by this user
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"createdBy","updatedBy","ticketAssignedTo","comments","attachments","group","category","subcategory"})
     private List<Ticket> ticketsCreated = new ArrayList<>();
 
     // Tickets last updated by this user
     @OneToMany(mappedBy = "updatedBy", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"createdBy","updatedBy","ticketAssignedTo","comments","attachments","group","category","subcategory"})
     private List<Ticket> ticketsUpdated = new ArrayList<>();
 
     // Tickets assigned to this user
     @OneToMany(mappedBy = "ticketAssignedTo", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"createdBy","updatedBy","ticketAssignedTo","comments","attachments","group","category","subcategory"})
     private List<Ticket> ticketsAssigned = new ArrayList<>();
 
 
+    //comments by the user
     //one user -> many comments
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<TicketComments> comments = new ArrayList<>();
 
+    /*// one user -> many ticket
+    @OneToMany(mappedBy = "ticket",cascade = CascadeType.ALL)
+    private List<Ticket> tickets = new ArrayList<>();
+*/
 }

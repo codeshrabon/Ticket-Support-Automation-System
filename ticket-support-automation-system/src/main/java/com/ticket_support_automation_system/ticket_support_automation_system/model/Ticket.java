@@ -37,6 +37,7 @@ public class Ticket {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_to")
+    @JsonIgnoreProperties({"ticketsCreated","ticketsUpdated","ticketsAssigned","comments"})
     private User ticketAssignedTo;
 
 
@@ -59,7 +60,7 @@ public class Ticket {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "category_id")
-    @JsonIgnoreProperties({"tickets", "subcategories"})
+//    @JsonIgnoreProperties({"tickets", "subcategories"})
     @NotNull(message = "Category is required")
     private Category category;
 
@@ -74,10 +75,12 @@ public class Ticket {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
+    @JsonIgnoreProperties({"ticketsCreated","ticketsUpdated","ticketsAssigned","comments"})
     private User createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "updated_by")
+    @JsonIgnoreProperties({"ticketsCreated","ticketsUpdated","ticketsAssigned","comments"})
     private User updatedBy;
 
     @CreatedDate
