@@ -30,11 +30,11 @@ public class Category {
     private Group group;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonBackReference
+//    @JsonBackReference
     private List<Ticket> tickets = new ArrayList<>();
 
     //one category -> many subcategories
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    @JsonManagedReference
+//    @JsonManagedReference
     private List<Subcategory> subcategories;
 }

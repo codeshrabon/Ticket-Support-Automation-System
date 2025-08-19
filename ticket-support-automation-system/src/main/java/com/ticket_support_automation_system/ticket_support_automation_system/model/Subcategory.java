@@ -28,11 +28,11 @@ public class Subcategory {
     //many subcategory -> one category
     @ManyToOne
     @JoinColumn(name = "category_id")
-    @JsonManagedReference
+//    @JsonManagedReference
     private Category category;
 
     //one subcategory -> many tickets
     @OneToMany(mappedBy = "subcategory", cascade = CascadeType.ALL)
-    @JsonManagedReference
+//    @JsonManagedReference
     private List<Ticket> tickets = new ArrayList<>();
 }

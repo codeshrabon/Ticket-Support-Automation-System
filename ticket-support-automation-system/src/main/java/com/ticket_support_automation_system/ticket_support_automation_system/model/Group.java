@@ -23,7 +23,7 @@ public class Group {
 
     //one group -> many category
     @OneToMany(mappedBy = "group",cascade = CascadeType.ALL)
-    @JsonManagedReference
+//    @JsonManagedReference
     private List<Category> categories;
 
 }

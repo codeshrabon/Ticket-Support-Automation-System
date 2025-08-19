@@ -66,7 +66,7 @@ public class Ticket {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "subcategory_id")
-    @JsonIgnoreProperties("tickets")
+//    @JsonIgnoreProperties("tickets")
     @NotNull(message = "Subcategory is required")
     private Subcategory subcategory;
 
@@ -88,12 +88,12 @@ public class Ticket {
     //one ticket -> many comments
     // orphanRemoval = true -> Otherwise, if a comment is removed from the list, it won’t automatically be deleted from DB.
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+//    @JsonManagedReference
     private List<TicketComments> comments = new ArrayList<>();
 
     // one ticket -> many attachments
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+//    @JsonManagedReference
     private List<TicketAttachment> attachments = new ArrayList<>();
 
 }
