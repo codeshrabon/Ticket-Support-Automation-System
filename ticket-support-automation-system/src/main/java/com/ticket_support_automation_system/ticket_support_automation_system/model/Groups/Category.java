@@ -1,5 +1,6 @@
 package com.ticket_support_automation_system.ticket_support_automation_system.model.Groups;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ticket_support_automation_system.ticket_support_automation_system.model.Ticket;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,7 +26,8 @@ public class Category {
 
     //one category -> one group
     @ManyToOne
-    @JoinColumn(name = "group_id")
+    @JoinColumn(name = "group_id",  nullable = false)
+    @JsonBackReference
     private Group group;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)

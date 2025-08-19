@@ -1,5 +1,6 @@
 package com.ticket_support_automation_system.ticket_support_automation_system.model.Groups;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -21,7 +22,7 @@ public class Group {
 
     //one group -> many category
     @OneToMany(mappedBy = "group",cascade = CascadeType.ALL)
-//    @JsonManagedReference
+    @JsonManagedReference
     private List<Category> categories;
 
 }
