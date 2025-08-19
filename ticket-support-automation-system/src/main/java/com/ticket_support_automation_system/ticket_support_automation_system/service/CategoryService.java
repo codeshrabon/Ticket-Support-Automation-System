@@ -1,7 +1,9 @@
 package com.ticket_support_automation_system.ticket_support_automation_system.service;
 
 import com.ticket_support_automation_system.ticket_support_automation_system.model.Groups.Category;
+import com.ticket_support_automation_system.ticket_support_automation_system.model.Groups.Group;
 import com.ticket_support_automation_system.ticket_support_automation_system.repository.CategoryRepository;
+import com.ticket_support_automation_system.ticket_support_automation_system.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,21 +15,33 @@ public class CategoryService {
     @Autowired
     private final CategoryRepository categoryRepository;
 
-    public CategoryService(CategoryRepository categoryRepository) {
+    @Autowired
+    private final GroupRepository groupRepository;
+
+    public CategoryService(CategoryRepository categoryRepository, GroupRepository groupRepository) {
         this.categoryRepository = categoryRepository;
+        this.groupRepository = groupRepository;
     }
 
-    // get all the category
-    public List<Category> GetAllCategories() {
-        return categoryRepository.findAll();
+
+    // get category by group
+    public List<Category> GetCategoriesByGroup(Long groupdId) {
+        return categoryRepository.findAll()
+                .stream()
+                .filter(c -> c.getGroup().getId().equals(groupdId))
+                .toList();
     }
 
     // add category
-    public List<Category> AddCategories(List<Category> category) {
-        for (Category c : category) {
-            if (c.getSubcategories() != null) {
-                c.getSubcategories().forEach(subc -> subc.setCategory(category));
-            }
+    public Category AddCategoriesToGroup(Long groupId, Category category) {
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new RuntimeException("Group not found"));
+
+        category.setGroup(group);
+
+        if (category.getSubcategories() != null) {
+            category.getSubcategories().forEach(subcategory -> subcategory.setCategory(category));
         }
+        return categoryRepository.save(category);
     }
 }

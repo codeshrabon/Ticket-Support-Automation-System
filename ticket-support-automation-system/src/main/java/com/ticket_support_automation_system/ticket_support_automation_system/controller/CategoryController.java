@@ -22,16 +22,16 @@ public class CategoryController {
     }
 
     // get all the category
-    @GetMapping("/allcategory")
-    public ResponseEntity<List<Category>> getAllCategories() {
-        List<Category> allCategory = categoryService.GetAllCategories();
+    @GetMapping("/group/{groupdId}")
+    public ResponseEntity<List<Category>> getCategoriesByGroup(@PathVariable Long groupdId) {
+        List<Category> allCategory = categoryService.GetCategoriesByGroup(groupdId);
         return ResponseEntity.ok(allCategory);
     }
 
     // add category from postman
-    @PostMapping("/addcategory")
-    public ResponseEntity<List<Category>> AddCategory(@RequestBody List<Category> category) {
-        List<Category> saveCategories = categoryService.AddCategories(category);
+    @PostMapping("/add/{groupId}")
+    public ResponseEntity<Category> AddCategory( @PathVariable Long groupId, @RequestBody Category category) {
+        Category saveCategories = categoryService.AddCategoriesToGroup(groupId, category);
         return ResponseEntity.status(HttpStatus.CREATED).body(saveCategories);
 
     }

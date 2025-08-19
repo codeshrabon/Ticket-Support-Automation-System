@@ -3,13 +3,17 @@ package com.ticket_support_automation_system.ticket_support_automation_system.mo
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ticket_support_automation_system.ticket_support_automation_system.model.Ticket;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "user_group")
 
 public class Group {
